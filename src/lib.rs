@@ -1,31 +1,40 @@
-pub struct SimManger<DynamicParameters, EnvironmentParameters, StepFn, StopFn>
+pub struct SimManger<DynamicParameters, EnvironmentParameters, StepFn>
 where
     StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
-    StopFn: FnMut(&DynamicParameters, &EnvironmentParameters) -> bool,
 {
     parameters: Vec<DynamicParameters>,
     environment_parameters: EnvironmentParameters,
     step_fn: StepFn,
-    stop_fn: StopFn,
 }
 
-impl<DynamicParameters, EnvironmentParameters, StepFn, StopFn>
-    SimManger<DynamicParameters, EnvironmentParameters, StepFn, StopFn>
+impl<DynamicParameters, EnvironmentParameters, StepFn>
+    SimManger<DynamicParameters, EnvironmentParameters, StepFn>
 where
     StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
-    StopFn: FnMut(&DynamicParameters, &EnvironmentParameters) -> bool,
 {
     fn new(
         initial_conditions: DynamicParameters,
         environment_parameters: EnvironmentParameters,
         step_fn: StepFn,
-        stop_fn: StopFn,
     ) -> Self {
         SimManger {
             parameters: vec![initial_conditions],
             environment_parameters,
             step_fn,
-            stop_fn,
+        }
+    }
+
+    fn run<StopFn>(&mut self, stop_fn: StopFn)
+    where
+        StopFn: FnMut(&DynamicParameters, &EnvironmentParameters) -> bool,
+    {
+        while (stop_fn(
+            self.parameters
+                .last()
+                .expect("Can't get last step dynamic parameters"),
+            &self.environment_parameters,
+        )) {
+            todo!()
         }
     }
 }
@@ -64,7 +73,6 @@ mod tests {
                 v_x: dyn_paramteres.v_x,
                 v_y: dyn_paramteres.v_y,
             },
-            |dyn_paramteres, environment_parameters| dyn_paramteres.t == 100.,
         );
     }
 }
