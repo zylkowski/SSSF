@@ -96,9 +96,11 @@ mod tests {
                 t: 0.,
             },
             EnvironmentParameters { dt: 1. },
-            |dyn_parameteres, environment_parameters| DynamicParameters {
-                t: dyn_parameteres.t + environment_parameters.dt,
-            },
-        );
+            |dyn_parameteres, environment_parameters|{
+                DynamicParameters {
+                    t: dyn_parameteres.t + environment_parameters.dt,
+                }
+            } 
+        ).run(|dyn_parameters, environment_parameters| dyn_parameters.t == 5.);
     }
 }
