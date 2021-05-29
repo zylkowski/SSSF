@@ -64,7 +64,7 @@ mod tests {
                 v_x: dyn_paramteres.v_x,
                 v_y: dyn_paramteres.v_y,
             },
-            |dyn_paramteres, environment_parameters| dyn_paramteres.t == 100,
+            |dyn_paramteres, environment_parameters| dyn_paramteres.t == 100.,
         );
     }
 }
