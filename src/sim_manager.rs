@@ -2,9 +2,9 @@ pub struct SimManger<DynamicParameters, EnvironmentParameters, StepFn>
 where
     StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
 {
-    parameters: Vec<DynamicParameters>,
-    environment_parameters: EnvironmentParameters,
-    step_fn: StepFn,
+    pub(crate) parameters: Vec<DynamicParameters>,
+    pub(crate) environment_parameters: EnvironmentParameters,
+    pub(crate) step_fn: StepFn,
 }
 
 impl<DynamicParameters, EnvironmentParameters, StepFn>

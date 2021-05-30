@@ -1,4 +1,5 @@
 use super::*;
+use assert_approx_eq::assert_approx_eq;
 
 #[test]
 fn building() {
@@ -34,7 +35,7 @@ fn building() {
 }
 
 #[test]
-fn running() {
+fn stop_fn_test() {
     struct DynamicParameters {
         t: f32,
     }
@@ -42,15 +43,15 @@ fn running() {
         dt: f32,
     }
 
-    SimManger::new(
-        DynamicParameters {
-            t: 0.,
-        },
+    let mut simulation = SimManger::new(
+        DynamicParameters { t: 0. },
         EnvironmentParameters { dt: 1. },
-        |dyn_parameteres, environment_parameters|{
-            DynamicParameters {
-                t: dyn_parameteres.t + environment_parameters.dt,
-            }
-        } 
-    ).run(|dyn_parameters, environment_parameters| dyn_parameters.t == 5.);
+        |dyn_parameteres, environment_parameters| DynamicParameters {
+            t: dyn_parameteres.t + environment_parameters.dt,
+        },
+    );
+
+    simulation.run(|dyn_parameters, _environment_parameters| dyn_parameters.t == 5.);
+
+    assert_approx_eq!(simulation.parameters.last().unwrap().t, 5., 0.1);
 }
