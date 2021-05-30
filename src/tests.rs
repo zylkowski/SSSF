@@ -52,6 +52,5 @@ fn stop_fn_test() {
     );
 
     simulation.run(|dyn_parameters, _environment_parameters| dyn_parameters.t == 5.);
-
     assert_approx_eq!(simulation.parameters.last().unwrap().t, 5., 0.1);
 }
