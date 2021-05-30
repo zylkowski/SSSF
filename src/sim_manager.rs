@@ -2,7 +2,9 @@ pub struct SimManger<DynamicParameters, EnvironmentParameters, StepFn>
 where
     StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
 {
+    // parameters that change while simulation is running and that we want to keep track of, eg. particle's position
     pub(crate) parameters: Vec<DynamicParameters>,
+    // parameters that are constant throughout whole simulation or those we don't need to track, eg. gravitational constand
     pub(crate) environment_parameters: EnvironmentParameters,
     pub(crate) step_fn: StepFn,
 }
