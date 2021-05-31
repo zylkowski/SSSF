@@ -1,3 +1,10 @@
+use std::path::{Path, PathBuf};
+
+pub trait ToCSV{
+    fn get_header() -> String;
+    fn get_row() -> String; 
+}
+
 pub struct SimManger<DynamicParameters, EnvironmentParameters, StepFn>
 where
     StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
@@ -7,11 +14,13 @@ where
     // parameters that are constant throughout whole simulation or those we don't need to track, eg. gravitational constant
     pub(crate) environment_parameters: EnvironmentParameters,
     pub(crate) step_fn: StepFn,
+    pub(crate) output_file: Option<PathBuf>
 }
 
 impl<DynamicParameters, EnvironmentParameters, StepFn>
     SimManger<DynamicParameters, EnvironmentParameters, StepFn>
 where
+    DynamicParameters: ToCSV,
     StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
 {
     pub fn new(
@@ -23,10 +32,16 @@ where
             parameters: vec![initial_conditions],
             environment_parameters,
             step_fn,
+            output_file: None
         }
     }
 
-    pub fn run<StopFn>(&mut self, stop_fn: StopFn)
+    pub fn to_file(&mut self, path: PathBuf) -> &mut Self {
+        self.output_file = Some(path);
+        self
+    }
+
+    pub fn run<StopFn>(&mut self, stop_fn: StopFn) -> &mut Self
     where
         StopFn: Fn(&DynamicParameters, &EnvironmentParameters) -> bool,
     {
@@ -44,5 +59,11 @@ where
                 break;
             }
         }
+        self.output_to_file();
+        self
+    }
+
+    fn output_to_file(&self) {
+        
     }
 }
