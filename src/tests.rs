@@ -10,6 +10,7 @@ fn building() {
         v_x: f32,
         v_y: f32,
     }
+
     struct EnvironmentParameters {
         g: f32,
         dt: f32,
@@ -53,4 +54,33 @@ fn stop_fn_test() {
 
     simulation.run(|dyn_parameters, _environment_parameters| dyn_parameters.t == 5.);
     assert_approx_eq!(simulation.parameters.last().unwrap().t, 5., 0.1);
+}
+
+#[test]
+fn to_csv_test() {
+    struct DynamicParameters {
+        t: i32,
+        x: i32,
+        y: i32,
+    }
+    impl ToCSV for DynamicParameters{
+        fn get_header() -> String {
+            String::from("t,x,y")
+        }
+        fn get_row(&self) -> String {
+            format!("{},{},{}", self.t, self.x, self.y)
+        }
+    }
+
+    let param = DynamicParameters{
+        t: 0,
+        x: 1,
+        y: 2,
+    };
+
+    let header = DynamicParameters::get_header();
+    assert_eq!("t,x,y",header);
+
+    let row = param.get_row();
+    assert_eq!("0,1,2",row);
 }

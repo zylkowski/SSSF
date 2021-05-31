@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 pub trait ToCSV{
     fn get_header() -> String;
-    fn get_row() -> String; 
+    fn get_row(&self) -> String; 
 }
 
 pub struct SimManger<DynamicParameters, EnvironmentParameters, StepFn>
@@ -20,7 +20,6 @@ where
 impl<DynamicParameters, EnvironmentParameters, StepFn>
     SimManger<DynamicParameters, EnvironmentParameters, StepFn>
 where
-    DynamicParameters: ToCSV,
     StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
 {
     pub fn new(
@@ -34,11 +33,6 @@ where
             step_fn,
             output_file: None
         }
-    }
-
-    pub fn to_file(&mut self, path: PathBuf) -> &mut Self {
-        self.output_file = Some(path);
-        self
     }
 
     pub fn run<StopFn>(&mut self, stop_fn: StopFn) -> &mut Self
@@ -59,6 +53,26 @@ where
                 break;
             }
         }
+        self
+    }
+}
+
+impl<DynamicParameters, EnvironmentParameters, StepFn>
+    SimManger<DynamicParameters, EnvironmentParameters, StepFn>
+where
+    DynamicParameters: ToCSV,
+    StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
+{
+    pub fn to_file(&mut self, path: PathBuf) -> &mut Self {
+        self.output_file = Some(path);
+        self
+    }
+
+    pub fn run_with_save<StopFn>(&mut self, stop_fn: StopFn) -> &mut Self
+    where
+        StopFn: Fn(&DynamicParameters, &EnvironmentParameters) -> bool,
+    {
+        self.run(stop_fn);
         self.output_to_file();
         self
     }
