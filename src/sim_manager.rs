@@ -1,8 +1,10 @@
-use std::path::{Path, PathBuf};
+use std::fs::File;
+use std::io::Write;
+use std::path::{PathBuf};
 
-pub trait ToCSV{
+pub trait ToCSV {
     fn get_header() -> String;
-    fn get_row(&self) -> String; 
+    fn get_row(&self) -> String;
 }
 
 pub struct SimManger<DynamicParameters, EnvironmentParameters, StepFn>
@@ -14,7 +16,7 @@ where
     // parameters that are constant throughout whole simulation or those we don't need to track, eg. gravitational constant
     pub(crate) environment_parameters: EnvironmentParameters,
     pub(crate) step_fn: StepFn,
-    pub(crate) output_file: Option<PathBuf>
+    pub(crate) output_file: Option<PathBuf>,
 }
 
 impl<DynamicParameters, EnvironmentParameters, StepFn>
@@ -31,7 +33,7 @@ where
             parameters: vec![initial_conditions],
             environment_parameters,
             step_fn,
-            output_file: None
+            output_file: None,
         }
     }
 
@@ -63,7 +65,7 @@ where
     DynamicParameters: ToCSV,
     StepFn: FnMut(&DynamicParameters, &mut EnvironmentParameters) -> DynamicParameters,
 {
-    pub fn to_file(&mut self, path: PathBuf) -> &mut Self {
+    pub fn to_file<'a>(&'a mut self, path: PathBuf) -> &'a mut Self {
         self.output_file = Some(path);
         self
     }
@@ -78,6 +80,17 @@ where
     }
 
     fn output_to_file(&self) {
-        todo!()
+        let path = self.output_file.as_ref().expect("You need to provide output file path first");
+        let mut file = File::create(
+            path
+        )
+        .expect("Cannot create file");
+
+        file.write(format!("{}\n", DynamicParameters::get_header()).as_bytes()).unwrap();
+        self.parameters
+            .iter()
+            .for_each(|x| {
+                file.write(format!("{}\n", x.get_row()).as_bytes()).unwrap();
+            } );
     }
 }
