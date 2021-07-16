@@ -1,9 +1,9 @@
 [package]
-name = "SSSF"
+name = "sssf"
 version = "0.1.0"
 authors = ["Arkadiusz Żyłkowski <arkadiuszzylkowski@gmail.com>"]
 readme = "README.md"
-license-file = "LICENSE.md"
+license-file = "LICENSE"
 repository = "https://github.com/zylkowski/SSSF"
 documentation = "https://docs.rs/sssf"
 description = """
