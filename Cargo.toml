@@ -1,7 +1,15 @@
 [package]
-name = "SSF"
+name = "SSSF"
 version = "0.1.0"
-authors = ["zylkowski <arkadiuszzylkowski@gmail.com>"]
+authors = ["Arkadiusz Żyłkowski <arkadiuszzylkowski@gmail.com>"]
+readme = "README.md"
+license-file = "LICENSE.md"
+repository = "https://github.com/zylkowski/SSSF"
+documentation = "https://docs.rs/sssf"
+description = """
+Super simple simulation framework.
+"""
+keywords = ["simulation"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
